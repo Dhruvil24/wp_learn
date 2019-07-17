@@ -9,7 +9,7 @@
  * @since 1.0
  */
 
-
+add_theme_support( 'post-thumbnails' );
 // ADD CSS AND SCRIPTS
 function theme_styles()  
 { 
@@ -35,13 +35,10 @@ function register_custom_nav_menus() {
   	) );
 }
 add_action( 'after_setup_theme', 'register_custom_nav_menus' );
-
 // end navBar
 
 
-
 // sideBar
-
 function my_register_sidebar() {
     /* Register the 'primary' sidebar. */
     register_sidebar(
@@ -125,7 +122,6 @@ class wpb_widget extends WP_Widget {
 	}
 	 
 	// Creating widget front-end
-	 
 	public function widget( $args, $instance ) {
 		$title 			= apply_filters( 'widget_title', $instance['title'] );
 		$description 	= apply_filters( 'widget_title', $instance['description'] );
@@ -144,15 +140,9 @@ class wpb_widget extends WP_Widget {
 	         
 	// Widget Backend 
 	public function form( $instance ) {
-		if ( isset( $instance[ 'title' ], $instance[ 'description' ]) ) {
+		$title 			= ( isset( $instance[ 'title' ]) ) 			? $instance[ 'title' ] : '';
+		$description 	= ( isset( $instance[ 'description' ]) ) 	? $instance[ 'description' ] : '';
 
-			$title 		 = $instance[ 'title' ];
-			$description = $instance[ 'description' ];
-		}
-		else {
-			$title 		 = __( '', 'wpb_widget_domain' );
-			$description = __( '', 'wpb_widget_domain' );
-		}
 	// Widget admin form
 		?>
 		<p>
@@ -178,13 +168,7 @@ class wpb_widget extends WP_Widget {
 } // Class wpb_widget ends here
 
 
-
-
-
-
-
 // SOCIAL WIDGET
-
 // Register and load the widget
 function social_menu_widget() {
     register_widget( 'social_widget' );
@@ -209,7 +193,6 @@ class social_widget extends WP_Widget {
 	}
 
 	// Creating widget front-end
-	 
 	public function widget( $args, $instance ) {
 
 		$title 		= apply_filters( 'widget_title', $instance['title'] ); 
@@ -301,7 +284,6 @@ class social_widget extends WP_Widget {
 
 
 // OPENING AND CLOSING HOURS
-
 // Register and load the widget
 function opening_hours_widget() {
     register_widget( 'hours_widget' );
@@ -327,10 +309,10 @@ class hours_widget extends WP_Widget {
 	}
 	 
 	// Creating widget front-end
-	 
 	public function widget( $args, $instance ) {
 		$title 					= apply_filters( 'widget_title', $instance['title'] );
 		$opening_closing_hours  = json_decode( $instance['opening_closing_hours'], true );
+		
 
 		// before and after widget arguments are defined by themes
 		echo $args['before_widget'];
@@ -359,6 +341,7 @@ class hours_widget extends WP_Widget {
 	public function form( $instance ) {
 		$title 	= ( isset( $instance[ 'title' ]) ) ? $instance[ 'title' ] : '';
 		$value 	= ( isset( $instance[ 'opening_closing_hours' ]) ) ? json_decode($instance[ 'opening_closing_hours' ], true) : '';
+		$weekdays = array('Mon','Tue','Wed','Thu','Fri','Sat','Sun');
 
 	// Widget admin form
 		?>
@@ -372,46 +355,21 @@ class hours_widget extends WP_Widget {
 					<th>Start Time</th>
 					<th>Closing Time</th>
 				</tr>
+				<?php 
+				foreach($weekdays as $day)
+				{	
+					?>
 				<tr>
-					<td>Monday</td>
-					<td><input type="time" class="widefat" name="<?php echo $this->get_field_name( "opening_closing_hours[mon][opening]" ); ?>" value="<?php echo esc_attr( $value['mon']['opening'] ); ?>" /></td>
-					<td><input type="time" class="widefat" name="<?php echo $this->get_field_name( "opening_closing_hours[mon][closing]" ); ?>" value="<?php echo esc_attr( $value['mon']['closing'] ); ?>" /></td>
+					<td style="text-transform:capitalize;"><?php echo $day; ?></td>
+					<td><input type="time" class="widefat" name="<?php echo $this->get_field_name( "opening_closing_hours[$day][opening]" ); ?>" value="<?php echo esc_attr( $value[$day]['opening'] ); ?>" /></td>
+					<td><input type="time" class="widefat" name="<?php echo $this->get_field_name( "opening_closing_hours[$day][closing]" ); ?>" value="<?php echo esc_attr( $value[$day]['closing'] ); ?>" /></td>
 				</tr>
-				<tr>
-					<td>Tuesday</td>
-					<td><input type="time" name="<?php echo $this->get_field_name( "opening_closing_hours[tue][opening]" ); ?>" class="opening_time" value="<?php echo esc_attr( $value['tue']['opening'] ); ?>" /></td>
-					<td><input type="time" name="<?php echo $this->get_field_name( "opening_closing_hours[tue][closing]" ); ?>" class="closing_time" value="<?php echo esc_attr( $value['tue']['closing'] ); ?>" /></td>
-				</tr>
-				<tr>
-					<td>Wednesday</td>
-					<td><input type="time" name="<?php echo $this->get_field_name( "opening_closing_hours[wed][opening]" ); ?>" class="opening_time" value="<?php echo esc_attr( $value['wed']['opening'] ); ?>" /></td>
-					<td><input type="time" name="<?php echo $this->get_field_name( "opening_closing_hours[wed][closing]" ); ?>" class="closing_time" value="<?php echo esc_attr( $value['wed']['closing'] ); ?>" /></td>
-				</tr>
-				<tr>
-					<td>Thursday</td>
-					<td><input type="time" name="<?php echo $this->get_field_name( "opening_closing_hours[thu][opening]" ); ?>" class="opening_time" value="<?php echo esc_attr( $value['thu']['opening'] ); ?>" /></td>
-					<td><input type="time" name="<?php echo $this->get_field_name( "opening_closing_hours[thu][closing]" ); ?>" class="closing_time" value="<?php echo esc_attr( $value['thu']['closing'] ); ?>" /></td>
-				</tr>
-				<tr>
-					<td>Friday</td>
-					<td><input type="time" name="<?php echo $this->get_field_name( "opening_closing_hours[fri][opening]" ); ?>" class="opening_time" value="<?php echo esc_attr( $value['fri']['opening'] ); ?>" /></td>
-					<td><input type="time" name="<?php echo $this->get_field_name( "opening_closing_hours[fri][closing]" ); ?>" class="closing_time" value="<?php echo esc_attr( $value['fri']['closing'] ); ?>" /></td>
-				</tr>
-				<tr>
-					<td>Saturday</td>
-					<td><input type="time" name="<?php echo $this->get_field_name( "opening_closing_hours[sat][opening]" ); ?>" class="opening_time" value="<?php echo esc_attr( $value['sat']['opening'] ); ?>" /></td>
-					<td><input type="time" name="<?php echo $this->get_field_name( "opening_closing_hours[sat][closing]" ); ?>" class="closing_time" value="<?php echo esc_attr( $value['sat']['closing'] ); ?>" /></td>
-				</tr>
-				<tr>
-					<td>Sunday</td>
-					<td><input type="time" name="<?php echo $this->get_field_name( "opening_closing_hours[sun][opening]" ); ?>" class="opening_time" value="<?php echo esc_attr( $value['sun']['opening'] ); ?>" /></td>
-					<td><input type="time" name="<?php echo $this->get_field_name( "opening_closing_hours[sun][closing]" ); ?>" class="closing_time" value="<?php echo esc_attr( $value['sun']['closing'] ); ?>" /></td>
-				</tr>
+					<?php 
+				}
+					?>
 			</table>
 		</p>
-		<?php
-
-		
+		<?php	
 	}
 	     
 	// Updating widget replacing old instances with new
@@ -424,3 +382,6 @@ class hours_widget extends WP_Widget {
 		return $instance;
 	}
 } // Class wpb_widget ends here
+
+
+require_once "custom-post-type-event.php";

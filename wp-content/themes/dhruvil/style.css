@@ -39,7 +39,7 @@ body {
     margin-bottom: 0px;
 }
 
-.menu .menu-item {
+.menu ul .menu-item {
     list-style: none;
 }
 
@@ -60,7 +60,7 @@ body {
     background: rgba(0, 0, 0, .8);
     display: block;
     /*padding: 8px 15px;*/
-}
+}   
 
 .blog-nav .menu-item {
     position: relative;
@@ -284,4 +284,9 @@ body {
 
 .social_icon.rounded a {
     border-radius: 50%;
+}
+
+.entry-content .thumbnail img{
+    height: 100%;
+    width: 100%;
 }
