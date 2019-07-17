@@ -23,7 +23,7 @@
 <body>
 	<div class="blog-masthead sticky">
 	    <div class="logo col-md-3">
-	        <a href="index.php"><img src="http://localhost/dhruvil/wp/Learn_wordpress/wp-content/themes/dhruvil/logo.png" class="img-fluid" style="position: absolute; height: 65px;"></a>
+	        <a href="http://localhost/dhruvil/wp/wp_learn/"><img src="http://localhost/dhruvil/wp/Learn_wordpress/wp-content/themes/dhruvil/logo.png" class="img-fluid" style="position: absolute; height: 65px;"></a>
 	    </div>
 	    <nav class="blog-nav col-md-9">
 	        <?php wp_nav_menu( array( 'theme_location' => 'header-menu' ) ); ?>

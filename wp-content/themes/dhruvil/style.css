@@ -9,8 +9,8 @@ Text Domain: dhruvil
 */
 
 body {
-    background: #f2f2f2;
-    background-image: url('background.jpg');
+    background: #f5f5f5;
+    /*background-image: url('background.jpg');*/
     background-size: 100%;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -26,7 +26,7 @@ body {
     min-height: 70px;
     background: #ffff;
     border-bottom: 2px solid #497422;
-    box-shadow: 0px 0px 40px #000;
+    /*box-shadow: 0px 0px 40px #000;*/
 }
 
 .blog-nav {
@@ -74,18 +74,19 @@ body {
     position: absolute;
     text-align: center;
     background: rgba(255, 255, 255, .9);
-    min-width: 140px;
+    min-width: 200px;
     box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.2);
 }
-
+.sub-menu .event-type a{
+    font-size: 17px;
+}
 .blog-nav .sub-menu a {
     margin-top: 0px;
-    padding: 10px 44px;
+    /*padding: 10px 80px;*/
 }
 
 .blog-nav .sub-menu a:hover {
     text-decoration: none;
-    font-weight: 800;
     display: block;
     z-index: 1;
     border-radius: 0px;
@@ -93,21 +94,21 @@ body {
 }
 
 .blog-nav .menu-item:hover .sub-menu {
-    display: block;
+    display: grid;
 }
 
 .blog-nav .sub-menu .menu-item .sub-menu {
     display: none;
     position: absolute;
     top: 0;
-    width: 180px;
+    width: 200px;
     border-radius: 0;
 }
 
 .blog-nav .sub-menu .menu-item:hover .sub-menu {
-    display: block;
+    display: grid;
     padding: 0;
-    left: -180px;
+    left: -200px;
 }
 
 .blog-header {
@@ -289,4 +290,20 @@ body {
 .entry-content .thumbnail img{
     height: 100%;
     width: 100%;
+}
+
+.col-md-4 div .entry-content .thumbnail img{
+    height: 200px;
+    width: 100%;
+}
+
+.event-content p{
+    color: #333;
+}
+.event-content h2 a{
+    color: #999;
+}
+.event-content h2 a:hover{
+    text-decoration: none;
+    color: #444;             
 }

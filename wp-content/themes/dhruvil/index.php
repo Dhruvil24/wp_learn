@@ -18,9 +18,9 @@
  get_header(); ?>
  <div style="display: flex;">
      <div class="col-md-9" style="float: left; padding: 0;">
-        <div class="container-fluid" style="background: rgba(0,0,0,.7); padding-top: 75px;">
-            <section style="min-height: 200px; color: #fff;">
-                <h1 class="entry-title"><?php the_title(); ?></h1>
+        <div class="container-fluid" style="background: #f5f5f5; padding-top: 75px;">
+            <section style="min-height: 200px;">
+                <h1 class="entry-title" style="color: #999;"><?php the_title(); ?></h1>
                 <?php
                 // TO SHOW THE PAGE CONTENTS
                 while ( have_posts() ) : the_post(); ?>
@@ -31,13 +31,13 @@
                 endwhile;
                 ?>
             </section>
-            <section style="min-height: 200px; width: 100%; color: #fff;"></section>
+            <section style="min-height: 200px; width: 100%;"></section>
             <section style="min-height: 200px; color: #fff;"></section>
-            <section style="min-height: 200px; color: #fff;"></section>
+            <section style="min-height: 250px; color: #fff;"></section>
         </div>
     </div>
 
-    <div class="col-md-3 pb-1" style="padding: 75px 0 0 0 ; background: rgba(255,255,255,.9); right: 0; ">
+    <div class="col-md-3 pb-1" style="padding: 75px 0 0 0 ; background: #c1c1c1; right: 0; ">
         <?php get_sidebar( 'Primary Sidebar' ); ?>  
     </div>
 </div>

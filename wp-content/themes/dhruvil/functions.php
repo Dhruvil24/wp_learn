@@ -384,4 +384,21 @@ class hours_widget extends WP_Widget {
 } // Class wpb_widget ends here
 
 
+
+// Function to add custom text to posts and pages
+  function custom_shortcode() {
+    return '<div style="color:#999; font-weight:700; font-size:24px;">'.'Hello Dhruvil'.'</div>';
+}
+add_shortcode('custom', 'custom_shortcode');
+
+
+// Function to add custom text to posts and pages
+  function number_shortcode( $atts, $content = null ) {
+  	$num = shortcode_atts(array(
+  		'perpage' => 5), $atts );
+
+    return '<div style="color:#999; font-size:24px;">'.esc_attr($num).'</div>';
+}
+add_shortcode('number', 'number_shortcode');
+
 require_once "custom-post-type-event.php";
