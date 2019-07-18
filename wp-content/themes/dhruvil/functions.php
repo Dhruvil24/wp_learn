@@ -10,15 +10,15 @@
  */
 
 add_theme_support( 'post-thumbnails' );
+
 // ADD CSS AND SCRIPTS
 function theme_styles()  
 { 
 	wp_register_style( 'fontawesome', 'http:////maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' );
+	
 	wp_enqueue_style( 'fontawesome');
 	wp_enqueue_style( 'style', get_template_directory_uri() . '/style.css');
 	wp_enqueue_style( 'bootstrap', get_template_directory_uri() . '/css/bootstrap.css');
-	
-
 	wp_enqueue_script( 'bootstrap', get_template_directory_uri() . '/js/bootstrap.min.js');
 }
 add_action('wp_enqueue_scripts', 'theme_styles');
@@ -386,19 +386,88 @@ class hours_widget extends WP_Widget {
 
 
 // Function to add custom text to posts and pages
-  function custom_shortcode() {
-    return '<div style="color:#999; font-weight:700; font-size:24px;">'.'Hello Dhruvil'.'</div>';
-}
-add_shortcode('custom', 'custom_shortcode');
+//   function custom_shortcode() {
+//     return '<div style="color:#999; font-weight:700; font-size:24px;">'.'Hello Dhruvil'.'</div>';
+// }
+// add_shortcode('custom', 'custom_shortcode');
 
 
 // Function to add custom text to posts and pages
-  function number_shortcode( $atts, $content = null ) {
-  	$num = shortcode_atts(array(
-  		'perpage' => 5), $atts );
+// function number_shortcode( $atts, $content = null ) {
+// 	extract(shortcode_atts(array(
+//         'limit' => 5,
+//     ), $atts));
+// 	$html = '';
+// 	for ($i=1; $i <= $limit; $i++) { 
+// 		$html .='<div style="color:#999; font-size:24px;">'.$i.'</div>';	
+// 	}
 
-    return '<div style="color:#999; font-size:24px;">'.esc_attr($num).'</div>';
+// 	$html .= '<p>'.$content.'</p>';
+// 	return $html;
+// }
+// add_shortcode('number_series', 'number_shortcode');
+
+
+
+
+// Function to add custom event to posts and pages
+function event_shortcode( $atts, $content = null ) {
+  	extract(shortcode_atts(
+  		array(
+	        'limit' 	=> 5,
+	        'orderby' 	=> 'ASC',
+	        'class' 	=> 'event',
+	    ), $atts)
+  	);
+
+    // The Query
+	$the_query = new WP_Query( array( 'post_type' => 'event' ) );
+ 	$html 	.='<div class="row">';
+    $html 	.='<div id="owl-carousel" class="owl-carousel owl-theme">';
+   
+    while ( $the_query->have_posts() ) : the_post();
+        $the_query->the_post();
+        $html 	.='<div class="pt-3 pb-3">';
+        $html 	.='<div style="background:#f5f5f5; box-shadow:0px 0px 5px #c6c6c6; 			border-radius:6px; height:250px; width:280px;">';
+        $html 	.='<div class="thumbnail">' . get_the_post_thumbnail() . '</div>';
+        $html 	.='<h4 style="color:#333; margin-top:10px; text-align:center; 				text-transform:capitalize;" >
+        			<a href="'.get_permalink().'">'.get_the_title().'</a></h4>';
+        $html 	.='</div>';
+        $html 	.='</div>';
+    endwhile; 
+   
+    $html 	.='</div>';
+    $html 	.='</div>';
+    $html 	.='<script type="text/javascript">
+			    	$(document).ready(function() {
+			            $("#owl-carousel").owlCarousel({
+						    loop:true,
+						    margin:10,
+						    responsiveClass:true,
+						    responsive:{
+						        0:{
+						            items:1,
+						            nav:true
+						        },
+						        600:{
+						            items:2,
+						            nav:false
+						        },
+						        1000:{
+						            items:3,
+						            nav:true,
+						            loop:false
+						        }
+						    }
+						})
+					});	
+		    	</script>';
+	
+    return $html;
 }
-add_shortcode('number', 'number_shortcode');
+add_shortcode('events', 'event_shortcode');
+
+
+
 
 require_once "custom-post-type-event.php";

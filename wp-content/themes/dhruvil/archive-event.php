@@ -5,7 +5,7 @@ if(have_posts()) :
 	echo '<div class="row pt-5 pb-5">';
 		while(have_posts()) : the_post();
 			$content = get_the_content('read more', true);
-			$content = substr($content,0,200);
+			$content = substr($content,0,150);
 			$content = apply_filters('the_content', $content );
 
 			echo '<div class="col-md-4 pb-5">';
@@ -15,7 +15,7 @@ if(have_posts()) :
 		    echo get_the_post_thumbnail();
 		    echo "</div>";
 		    echo '<div class="event-content" style="color:#999; padding:20px;">';
-		    echo '<h2 style="color:#333;" ><a href="'.get_permalink().'">'.get_the_title().'</a></h2>';
+		    echo '<h3 style="color:#333;text-transform:capitalize;" ><a href="'.get_permalink().'">'.get_the_title().'</a></h3>';
 		   	echo $content; 
 		    echo '</div>';
 		    echo '</div>';

@@ -300,10 +300,32 @@ body {
 .event-content p{
     color: #333;
 }
-.event-content h2 a{
+.event-content h3 a{
     color: #999;
 }
-.event-content h2 a:hover{
+.event-content h3 a:hover{
     text-decoration: none;
     color: #444;             
+}
+.owl-carousel{
+    z-index: 0;
+}
+.owl-carousel .owl-stage img{
+    width: 280px;
+    height: 200px;
+    border-radius: 6px 6px 0 0;
+}
+.owl-carousel.owl-drag .owl-item h4 a{
+    color: #888;
+}
+.owl-carousel.owl-drag .owl-item h4 a:hover{
+    text-decoration: none;
+    color:#333;
+}
+.owl-carousel .owl-nav{
+    margin: 0;
+    font-size: 25px;
+}
+.owl-carousel .owl-dots{
+    display: none;
 }
