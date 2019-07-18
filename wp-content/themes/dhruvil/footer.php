@@ -28,31 +28,6 @@ wp_footer()?>
 
 		<script src="https://owlcarousel2.github.io/OwlCarousel2/assets/owlcarousel/owl.carousel.js"></script>
 
-		<script type="text/javascript">
-    	$(document).ready(function() {
-            $("#owl-carousel").owlCarousel({
-			    loop:true,
-			    margin:10,
-			    navigation: true,
-			    responsiveClass:true,
-			    responsive:{
-			        0:{
-			            items:1,
-			            nav:true
-			        },
-			        600:{
-			            items:3,
-			            nav:false
-			        },
-			        1000:{
-			            items:5,
-			            nav:true,
-			            loop:false
-			        }
-			    }
-			})
-		});	
-    </script>
 	</body>
 </html>
 

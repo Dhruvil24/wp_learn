@@ -415,17 +415,17 @@ function event_shortcode( $atts, $content = null ) {
   	extract(shortcode_atts(
   		array(
 	        'limit' 	=> 5,
-	        'orderby' 	=> 'ASC',
+	        'order' 	=> 'ASC',
 	        'class' 	=> 'event',
 	    ), $atts)
   	);
 
     // The Query
-	$the_query = new WP_Query( array( 'post_type' => 'event' ) );
+	$the_query = new WP_Query( array( 'post_type' => 'event', 'order' => 'ASC' ) );
  	$html 	.='<div class="row">';
     $html 	.='<div id="owl-carousel" class="owl-carousel owl-theme">';
    
-    while ( $the_query->have_posts() ) : the_post();
+    $i=0; while ( $the_query->have_posts() && $i < 5 ) : the_post();
         $the_query->the_post();
         $html 	.='<div class="pt-3 pb-3">';
         $html 	.='<div style="background:#f5f5f5; box-shadow:0px 0px 5px #c6c6c6; 			border-radius:6px; height:250px; width:280px;">';
@@ -434,7 +434,8 @@ function event_shortcode( $atts, $content = null ) {
         			<a href="'.get_permalink().'">'.get_the_title().'</a></h4>';
         $html 	.='</div>';
         $html 	.='</div>';
-    endwhile; 
+    $i++;
+	endwhile; 
    
     $html 	.='</div>';
     $html 	.='</div>';
