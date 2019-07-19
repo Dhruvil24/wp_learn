@@ -414,27 +414,26 @@ class hours_widget extends WP_Widget {
 function event_shortcode( $atts, $content = null ) {
   	extract(shortcode_atts(
   		array(
-	        'limit' 	=> 5,
+	        'limit' 	=> 10,
 	        'order' 	=> 'ASC',
 	        'class' 	=> 'event',
 	    ), $atts)
   	);
 
     // The Query
-	$the_query = new WP_Query( array( 'post_type' => 'event', 'order' => 'ASC' ) );
+	$the_query = new WP_Query( array( 'post_type' => 'event', 'order' => $order, 'posts_per_page' => $limit ) );
  	$html 	.='<div class="row">';
     $html 	.='<div id="owl-carousel" class="owl-carousel owl-theme">';
    
-    $i=0; while ( $the_query->have_posts() && $i < 5 ) : the_post();
+    while ( $the_query->have_posts() ) : the_post();
         $the_query->the_post();
         $html 	.='<div class="pt-3 pb-3">';
-        $html 	.='<div style="background:#f5f5f5; box-shadow:0px 0px 5px #c6c6c6; 			border-radius:6px; height:250px; width:280px;">';
+        $html 	.='<div style="background:#f5f5f5; box-shadow:0px 0px 5px #c6c6c6; 			border-radius:6px; height:250px; width:320px;">';
         $html 	.='<div class="thumbnail">' . get_the_post_thumbnail() . '</div>';
         $html 	.='<h4 style="color:#333; margin-top:10px; text-align:center; 				text-transform:capitalize;" >
         			<a href="'.get_permalink().'">'.get_the_title().'</a></h4>';
         $html 	.='</div>';
         $html 	.='</div>';
-    $i++;
 	endwhile; 
    
     $html 	.='</div>';
@@ -443,7 +442,7 @@ function event_shortcode( $atts, $content = null ) {
 			    	$(document).ready(function() {
 			            $("#owl-carousel").owlCarousel({
 						    loop:true,
-						    margin:10,
+						    margin:0,
 						    responsiveClass:true,
 						    responsive:{
 						        0:{
@@ -467,6 +466,125 @@ function event_shortcode( $atts, $content = null ) {
     return $html;
 }
 add_shortcode('events', 'event_shortcode');
+
+
+// EVENT WIDGET
+// Register and load the widget
+function event_load_widget() {
+    register_widget( 'event_widget' );
+}
+add_action( 'widgets_init', 'event_load_widget' );
+ 
+// Creating the widget 
+class event_widget extends WP_Widget {
+ 
+	function __construct() {
+		
+		parent::__construct(
+		 
+			// Base ID of your widget
+			'event_widget', 
+			 
+			// Widget name will appear in UI
+			__('Event Widget', 'event_widget_domain'), 
+			 
+			// Widget description
+			array( 'description' => __( 'Event Widget For Display Events', 'event_widget_domain' ), ) 
+		);
+	}
+	 
+	// Creating widget front-end
+	public function widget( $args, $instance ) {
+		$title 				= apply_filters( 'widget_title', $instance['title'] );
+		$per_page			= (! $instance['count']) ? 6 : $instance['count'];
+		$order				= (! $instance['order']) ? 'DESC' : $instance['order'];
+		$show_thumbnail		= ($instance['show_thumbnail']) ? true : false; 
+		
+
+		// before and after widget arguments are defined by themes
+		echo $args['before_widget'];
+		if ( ! empty( $title ) )
+			echo $args['before_title'] . $title . $args['after_title'];
+
+
+		// This is where you run the code and display the output
+		$the_query = new WP_Query( array( 
+									'post_type' 		=> 'event', 
+									'order' 			=> $order, 
+									'posts_per_page' 	=> $per_page 
+									) 
+								);
+		
+   		echo '<div class="thumbnail_list pt-3">';
+   		echo '<div style="display: grid;margin-left: 30px;">';
+	    if ( $the_query->have_posts() ) : 
+	    	while ( $the_query->have_posts() ) : $the_query->the_post();
+	    		echo '<div class="caption" style="margin-bottom:15px;">';
+		        if ($show_thumbnail) {
+		        	echo '<div class="thumb">';
+		        	echo '<div class="thumbnail" style="height: 50px; float:left;width: 50px;background: #d2d2d2;">' . get_the_post_thumbnail(get_the_ID(),'thumbnail');
+		        	echo '</div>';
+		        	echo '</div>';
+		        }
+		        	echo '<div>';
+			        echo '<div class="content" style="font-size:12px; float:left; text-transform:capitalize;">';
+			        echo '<h6><a href="'.get_permalink().'">'.get_the_title().'</a></h6>'. get_the_date();
+			        echo '</div>';			       
+			        echo '</div>';	
+			        echo '</div>';		       
+			endwhile;
+			wp_reset_postdata();
+	  	endif;
+	  	echo '</div>';
+	  	echo '</div>';
+		echo $args['after_widget'];
+	}
+	         
+	
+	// Widget Backend 
+	public function form( $instance ) {
+		$title 				= ( isset( $instance[ 'title' ]) ) 			? $instance[ 'title' ] : '';
+		$count 				= ( isset( $instance[ 'count' ]) ) 			? $instance[ 'count' ] : '';
+		$order 				= ( isset( $instance[ 'order' ]) ) 			? $instance[ 'order' ] : '';
+		$show_thumbnail 	= ( isset( $instance[ 'show_thumbnail' ] ) && !empty($instance[ 'show_thumbnail' ])) ? $instance[ 'show_thumbnail' ] : '';
+
+
+		// Widget admin form
+		?>
+		<p>
+			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label> 
+			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+			<label for="<?php echo $this->get_field_id( 'count' ); ?>"><?php _e( 'Count:' ); ?></label> 
+			<input class="widefat" id="<?php echo $this->get_field_id( 'count' ); ?>" name="<?php echo $this->get_field_name( 'count' ); ?>" type="text" value="<?php echo esc_attr( $count ); ?>" />
+	  		<label for="<?php echo $this->get_field_id( 'order' ); ?>"><?php _e( 'Order:' ); ?></label> 
+			<select class="form-control" id="order" style="width: 100%;" name="<?php echo $this->get_field_name( 'order' ); ?>">
+				<option value="ASC" <?php echo ($order == 'ASC') ? 'selected': '';?> >ASC</option>
+				<option value="DESC" <?php echo ($order == 'DESC') ? 'selected': '';?> >DESC</option>
+			</select>
+			<div class="checkbox">
+			  <label><input type="checkbox" name="<?php echo $this->get_field_name( 'show_thumbnail' ); ?>" value="show_thumbnail" <?php echo ($show_thumbnail) ? 'checked': '';?>>Show Thumbnail</label>
+			</div>
+		</p>
+		<?php 
+	}
+	     
+	
+	// Updating widget replacing old instances with new
+	public function update( $new_instance, $old_instance ) {
+		$instance 				 		= array();
+		$instance['title'] 			 	= ( ! empty( $new_instance['title'] ) ) 		? strip_tags( $new_instance['title'] ) : '';
+		$instance['count'] 		 		= ( ! empty( $new_instance['count'] ) ) 		? strip_tags( $new_instance['count'] ) : '';
+		$instance['order'] 		 		= ( ! empty( $new_instance['order'] ) ) 		? strip_tags( $new_instance['order'] ) : '';
+		$instance['show_thumbnail'] 	= ( ! empty( $new_instance['show_thumbnail'] ) ) 	? $new_instance['show_thumbnail'] : '';
+
+		return $instance;
+	}
+} // Class wpb_widget ends here
+
+
+
+
+
 
 
 

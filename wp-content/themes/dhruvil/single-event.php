@@ -10,7 +10,7 @@ if(have_posts()) :
 		    echo get_the_post_thumbnail();
 		    echo "</div>";
 		    echo '<div class="event-content" style="color:#333; padding:20px;">';
-		    echo '<h1 style="color:#999; padding:10px; text-align:center;" >'.get_the_title().'</h1>';
+		    echo '<h1 style="color:#999; padding:10px; text-align:center;text-transform:capitalize;" >'.get_the_title().'</h1>';
 		    echo get_the_content();
 		    echo '</div>';
 		    echo '</div>';
