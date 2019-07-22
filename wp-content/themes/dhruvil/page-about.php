@@ -1,6 +1,6 @@
 <?php
 /**
-* Template Name: Full Width About Page
+* Template Name: About Page
 *
 * @package WordPress
 * @subpackage Dhruvil

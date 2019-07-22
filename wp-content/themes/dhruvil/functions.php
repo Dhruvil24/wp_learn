@@ -428,10 +428,22 @@ function event_shortcode( $atts, $content = null ) {
     while ( $the_query->have_posts() ) : the_post();
         $the_query->the_post();
         $html 	.='<div class="pt-3 pb-3">';
-        $html 	.='<div style="background:#f5f5f5; box-shadow:0px 0px 5px #c6c6c6; 			border-radius:6px; height:250px; width:320px;">';
+        $html 	.='<div style="background:#f5f5f5; box-shadow:0px 0px 5px #c6c6c6; 			border-radius:6px; height:350px; width:320px;">';
         $html 	.='<div class="thumbnail">' . get_the_post_thumbnail() . '</div>';
         $html 	.='<h4 style="color:#333; margin-top:10px; text-align:center; 				text-transform:capitalize;" >
         			<a href="'.get_permalink().'">'.get_the_title().'</a></h4>';
+        $html 	.='<h6 style="color:#111; text-align:center;">Location: '
+        			.get_post_meta( get_the_ID(), '_location' , true ).'</h6>';
+        $html 	.='<h6 style="color:#111; text-align:center;">Start_Date: '
+        			.get_post_meta( get_the_ID(), '_start_date' , true ).'</h6>';
+        			$html 	.='<h6 style="color:#111; text-align:center;">Fees: '
+        			.get_post_meta( get_the_ID(), '_fees' , true ).'</h6>';
+        $html   .='<div style="display:flex;">';
+        // $html 	.='<h6 class="col-md-6" style="color:#111;">Date: '
+        // 			.get_post_meta( get_the_ID(), 'start_date' , true ).'</h6>
+        // 			<h6 class="col-md-6" style="text-align:right;">Time: '
+        // 			.get_post_meta( get_the_ID(), 'start_time' , true ).'</h6>';
+        $html 	.='</div>';
         $html 	.='</div>';
         $html 	.='</div>';
 	endwhile; 
@@ -582,9 +594,91 @@ class event_widget extends WP_Widget {
 } // Class wpb_widget ends here
 
 
+// META BOX
+function add_your_fields_meta_box() {
+	add_meta_box(
+		'your_fields_meta_box', // $id
+		'Event Title', // $title
+		'event_meta_box_callback', // $callback
+		'event' // $screen	
+	);
+}
+add_action( 'add_meta_boxes', 'add_your_fields_meta_box' );
+
+function event_meta_box_callback($post){
+
+	// Add a nonce field so we can check for it later.
+    wp_nonce_field( 'event_notice_nonce', 'event_notice_nonce' );
+
+    $location = get_post_meta( get_the_ID(), '_location', true );
+    $start_date = get_post_meta( get_the_ID(), '_start_date', true );
+    $fees = get_post_meta( get_the_ID(), '_fees', true );
 
 
+    echo '<div style="display:flex;">';
+    echo '<div style="margin-bottom:0; width:40%;">';
+    echo '<label>Location:</lable>';
+    echo '<input type="text" style="width:100%;" id="location" name="location" value="'.esc_attr( $location ).'">';
+    echo '<label>Start_Date:</lable>';
+    echo '<input style="width:100%;" type="date" id="date" name="date" value="'.esc_attr( $start_date ).'">';
+    echo '<label>Fees:</lable>';
+    echo '<select name="fees" style="width:100%;">';
+    echo '<option value="Free" <?= ($fees == "Free") ? "selected": "";?>Free</option>';   
+    echo '<option value="Royal" onselect="myFun()" <?= ($fees == "Royal") ? "selected": "";?>Royal</option>';
+    echo '</select>';   
+    echo '<div id="div1"></div>';
+    echo '</div>';
+    echo '</div>';
+}
 
+
+	function myFun(){
+		jQuery('#div1').append('<input type="text" name=""/>');
+	}
+/**
+ * When the post is saved, saves our custom data.
+ *
+ * @param int $post_id
+ */
+function save_event_notice_meta_box_data( $post_id ) {
+
+    // Check if our nonce is set.
+    if ( ! isset( $_POST['event_notice_nonce'] ) ) {
+        return;
+    }
+
+    // Verify that the nonce is valid.
+    if ( ! wp_verify_nonce( $_POST['event_notice_nonce'], 'event_notice_nonce' ) ) {
+        return;
+    }
+
+    // If this is an autosave, our form has not been submitted, so we don't want to do anything.
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+        return;
+    }
+
+    // Check the user's permissions.
+    if ( isset( $_POST['post_type'] ) && 'event' == $_POST['post_type'] ) {
+
+        if ( ! current_user_can( 'edit_page', $post_id ) ) {
+            return;
+        }
+    }
+    else {
+        return;
+    }
+
+
+    $location = sanitize_text_field( $_POST['location'] );
+    $start_date = sanitize_text_field( $_POST['date'] );
+    $fees = sanitize_text_field( $_POST['fees'] );
+
+    // Update the meta field in the database.
+    update_post_meta( $post_id, '_location', $location );
+    update_post_meta( $post_id, '_start_date', $start_date );
+    update_post_meta( $post_id, '_fees', $fees );
+}
+add_action( 'save_post', 'save_event_notice_meta_box_data' );
 
 
 

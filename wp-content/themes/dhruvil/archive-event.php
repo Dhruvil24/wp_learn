@@ -9,13 +9,16 @@ if(have_posts()) :
 			$content = apply_filters('the_content', $content );
 
 			echo '<div class="col-md-4 pb-5">';
-			echo '<div class="" style="background: #f5f5f5; box-shadow: 0px 0px 10px #c6c6c6; border-radius: 6px; height:450px;">';
+			echo '<div class="" style="background: #f5f5f5; box-shadow: 0px 0px 10px #c6c6c6; border-radius: 6px; height:420px;">';
 		    echo '<div class="entry-content">';
 		    echo '<div class="thumbnail">';
 		    echo get_the_post_thumbnail();
 		    echo "</div>";
 		    echo '<div class="event-content" style="color:#999; padding:20px;">';
 		    echo '<h3 style="color:#333;text-transform:capitalize;" ><a href="'.get_permalink().'">'.get_the_title().'</a></h3>';
+		    echo '<div class="meta">';
+		    echo 'In '.get_post_meta( get_the_ID(), 'location' , true );
+   	 		echo '</div>';
 		   	echo $content; 
 		    echo '</div>';
 		    echo '</div>';
