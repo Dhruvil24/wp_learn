@@ -428,16 +428,24 @@ function event_shortcode( $atts, $content = null ) {
     while ( $the_query->have_posts() ) : the_post();
         $the_query->the_post();
         $html 	.='<div class="pt-3 pb-3">';
-        $html 	.='<div style="background:#f5f5f5; box-shadow:0px 0px 5px #c6c6c6; 			border-radius:6px; height:350px; width:320px;">';
+        $html 	.='<div style="background:#f5f5f5; box-shadow:0px 0px 5px #c6c6c6;border-radius:6px; 				height:350px; width:320px;">';
         $html 	.='<div class="thumbnail">' . get_the_post_thumbnail() . '</div>';
-        $html 	.='<h4 style="color:#333; margin-top:10px; text-align:center; 				text-transform:capitalize;" >
+        $html 	.='<h4 style="color:#333; margin-top:10px; text-align:center; 										text-transform:capitalize;" >
         			<a href="'.get_permalink().'">'.get_the_title().'</a></h4>';
         $html 	.='<h6 style="color:#111; text-align:center;">Location: '
         			.get_post_meta( get_the_ID(), '_location' , true ).'</h6>';
         $html 	.='<h6 style="color:#111; text-align:center;">Start_Date: '
         			.get_post_meta( get_the_ID(), '_start_date' , true ).'</h6>';
-        			$html 	.='<h6 style="color:#111; text-align:center;">Fees: '
-        			.get_post_meta( get_the_ID(), '_fees' , true ).'</h6>';
+		
+					if(get_post_meta( get_the_ID(), '_entry' , true ) == 'Royal'){
+						$html 	.='<h6 style="color:#111; text-align:center;">Fees: Rs.' 
+					.get_post_meta( get_the_ID(), '_amount' , true ).'</h6>';
+					}
+					else
+					{	
+						$html 	.='<h6 style="color:#111; text-align:center;">Free</h6>';
+
+					}
         $html   .='<div style="display:flex;">';
         // $html 	.='<h6 class="col-md-6" style="color:#111;">Date: '
         // 			.get_post_meta( get_the_ID(), 'start_date' , true ).'</h6>
@@ -474,7 +482,6 @@ function event_shortcode( $atts, $content = null ) {
 						})
 					});	
 		    	</script>';
-	
     return $html;
 }
 add_shortcode('events', 'event_shortcode');
@@ -610,31 +617,55 @@ function event_meta_box_callback($post){
 	// Add a nonce field so we can check for it later.
     wp_nonce_field( 'event_notice_nonce', 'event_notice_nonce' );
 
-    $location = get_post_meta( get_the_ID(), '_location', true );
-    $start_date = get_post_meta( get_the_ID(), '_start_date', true );
-    $fees = get_post_meta( get_the_ID(), '_fees', true );
+    $location 	 = get_post_meta( get_the_ID(), '_location', true );
+    $start_date  = get_post_meta( get_the_ID(), '_start_date', true );
+    $entry 		 = get_post_meta( get_the_ID(), '_entry', true );
+    $amount 	 = get_post_meta( get_the_ID(), '_amount', true );
 
 
-    echo '<div style="display:flex;">';
-    echo '<div style="margin-bottom:0; width:40%;">';
-    echo '<label>Location:</lable>';
-    echo '<input type="text" style="width:100%;" id="location" name="location" value="'.esc_attr( $location ).'">';
-    echo '<label>Start_Date:</lable>';
-    echo '<input style="width:100%;" type="date" id="date" name="date" value="'.esc_attr( $start_date ).'">';
-    echo '<label>Fees:</lable>';
-    echo '<select name="fees" style="width:100%;">';
-    echo '<option value="Free" <?= ($fees == "Free") ? "selected": "";?>Free</option>';   
-    echo '<option value="Royal" onselect="myFun()" <?= ($fees == "Royal") ? "selected": "";?>Royal</option>';
-    echo '</select>';   
-    echo '<div id="div1"></div>';
-    echo '</div>';
-    echo '</div>';
+    $event_html  = ''; 
+    $event_html .='<div style="display:flex;">';
+    $event_html .='<div style="margin-bottom:0; width:40%;">';
+    $event_html .='<label>Location:</lable>';
+    $event_html .='<input type="text" style="width:100%;" id="location" name="location" 
+    				value="'.esc_attr( $location ).'">';
+    $event_html .='<label>Start_Date:</lable>';
+    $event_html .='<input style="width:100%;" type="date" id="date" name="date" 
+    				value="'.esc_attr( $start_date ).'">';
+    $event_html .='<label>Entry:</lable>';
+    $event_html .='<select name="entry" onchange="myFun(this)" style="width:100%;">';
+    $event_html .='<option value="Free" '.esc_attr($entry == 'Free' ? 'selected' : '').' >Free</option>';   
+    $event_html .='<option value="Royal" '.esc_attr($entry == 'Royal' ? 'selected' : '').' >Royal</option>';
+    $event_html .='</select>';   
+	if($entry == 'Royal')
+    {
+        $event_html .='<div id="div1">Rs. <input type=text id=amount style=width:100% name=amount 
+        				value='.esc_attr( $amount ).'></div>';
+    }
+    else
+    {
+        $event_html .='<div id="div1"></div>';
+    }
+    $event_html .='</div>';
+    $event_html .='</div>';
+ 	$event_html .='<div>';
+    $event_html .='<script>
+		            function myFun(entry){
+		            	if(entry.value == "Royal"){
+		                $("#div1").html("Rs. <input type=text id=amount style=width:100% name=amount value='.esc_attr( $amount ).'>");
+		                }
+		                else
+		                {
+		                	$("#div1").html("");
+		                }
+		            }       
+		          </script>';
+    $event_html .='</div>';
+    echo $event_html;
 }
 
 
-	function myFun(){
-		jQuery('#div1').append('<input type="text" name=""/>');
-	}
+
 /**
  * When the post is saved, saves our custom data.
  *
@@ -658,29 +689,31 @@ function save_event_notice_meta_box_data( $post_id ) {
     }
 
     // Check the user's permissions.
-    if ( isset( $_POST['post_type'] ) && 'event' == $_POST['post_type'] ) {
-
+    if ( isset( $_POST['post_type'] ) && 'event' == $_POST['post_type'] ) 
+    {
         if ( ! current_user_can( 'edit_page', $post_id ) ) {
             return;
         }
     }
-    else {
+    else 
+    {
         return;
     }
 
 
-    $location = sanitize_text_field( $_POST['location'] );
-    $start_date = sanitize_text_field( $_POST['date'] );
-    $fees = sanitize_text_field( $_POST['fees'] );
+    $location 	 = sanitize_text_field( $_POST['location'] );
+    $start_date  = sanitize_text_field( $_POST['date'] );
+    $entry 		 = sanitize_text_field( $_POST['entry'] );
+    $amount		 = sanitize_text_field( $_POST['amount'] );
+
 
     // Update the meta field in the database.
     update_post_meta( $post_id, '_location', $location );
     update_post_meta( $post_id, '_start_date', $start_date );
-    update_post_meta( $post_id, '_fees', $fees );
+    update_post_meta( $post_id, '_entry', $entry );
+    update_post_meta( $post_id, '_amount', $amount );
 }
 add_action( 'save_post', 'save_event_notice_meta_box_data' );
-
-
 
 
 require_once "custom-post-type-event.php";
