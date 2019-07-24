@@ -386,26 +386,26 @@ class hours_widget extends WP_Widget {
 
 
 // Function to add custom text to posts and pages
-//   function custom_shortcode() {
-//     return '<div style="color:#999; font-weight:700; font-size:24px;">'.'Hello Dhruvil'.'</div>';
-// }
-// add_shortcode('custom', 'custom_shortcode');
+  function custom_shortcode() {
+    return '<div style="color:#999; font-weight:700; font-size:24px;">'.'Hello Dhruvil'.'</div>';
+}
+add_shortcode('custom', 'custom_shortcode');
 
 
 // Function to add custom text to posts and pages
-// function number_shortcode( $atts, $content = null ) {
-// 	extract(shortcode_atts(array(
-//         'limit' => 5,
-//     ), $atts));
-// 	$html = '';
-// 	for ($i=1; $i <= $limit; $i++) { 
-// 		$html .='<div style="color:#999; font-size:24px;">'.$i.'</div>';	
-// 	}
+function number_shortcode( $atts, $content = null ) {
+	extract(shortcode_atts(array(
+        'limit' => 5,
+    ), $atts));
+	$html = '';
+	for ($i=1; $i <= $limit; $i++) { 
+		$html .='<div style="color:#999; font-size:24px;">'.$i.'</div>';	
+	}
 
-// 	$html .= '<p>'.$content.'</p>';
-// 	return $html;
-// }
-// add_shortcode('number_series', 'number_shortcode');
+	$html .= '<p>'.$content.'</p>';
+	return $html;
+}
+add_shortcode('number_series', 'number_shortcode');
 
 
 
@@ -428,24 +428,26 @@ function event_shortcode( $atts, $content = null ) {
     while ( $the_query->have_posts() ) : the_post();
         $the_query->the_post();
         $html 	.='<div class="pt-3 pb-3">';
-        $html 	.='<div style="background:#f5f5f5; box-shadow:0px 0px 5px #c6c6c6;border-radius:6px; 				height:350px; width:320px;">';
+        $html 	.='<div style="background:#f5f5f5; box-shadow:0px 0px 5px #c6c6c6;border-radius:6px; 				height:310px; width:320px;">';
         $html 	.='<div class="thumbnail">' . get_the_post_thumbnail() . '</div>';
         $html 	.='<h4 style="color:#333; margin-top:10px; text-align:center; 										text-transform:capitalize;" >
         			<a href="'.get_permalink().'">'.get_the_title().'</a></h4>';
         $html 	.='<h6 style="color:#111; text-align:center;">Location: '
         			.get_post_meta( get_the_ID(), '_location' , true ).'</h6>';
-        $html 	.='<h6 style="color:#111; text-align:center;">Start_Date: '
+        $html 	.='<div style="display:flex;">';
+        $html 	.='<h6 class="col-md-8" style="color:#111; text-align:left;">Start_Date: '
         			.get_post_meta( get_the_ID(), '_start_date' , true ).'</h6>';
 		
 					if(get_post_meta( get_the_ID(), '_entry' , true ) == 'Royal'){
-						$html 	.='<h6 style="color:#111; text-align:center;">Fees: Rs.' 
+						$html 	.='<h6 class="col-md-4" style="color:#111; text-align:left; padding:0 10px 0 0;">Fees: Rs.' 
 					.get_post_meta( get_the_ID(), '_amount' , true ).'</h6>';
 					}
 					else
 					{	
-						$html 	.='<h6 style="color:#111; text-align:center;">Free</h6>';
+						$html 	.='<h6 style="color:#111; text-align:center;">Free Entry</h6>';
 
 					}
+		$html 	.='</div>';
         $html   .='<div style="display:flex;">';
         // $html 	.='<h6 class="col-md-6" style="color:#111;">Date: '
         // 			.get_post_meta( get_the_ID(), 'start_date' , true ).'</h6>
@@ -715,5 +717,164 @@ function save_event_notice_meta_box_data( $post_id ) {
 }
 add_action( 'save_post', 'save_event_notice_meta_box_data' );
 
+
+// GRID SHORTCODE
+function event_grid_shortcode( $atts, $content = null ) {
+  	extract(shortcode_atts(
+  		array(
+	        'column' 	=> 4,
+	    ), $atts)
+  	);
+  	$class = 'column-4';
+  	if($column <= 6 && $column >= 2){
+  		$class = 'column-'.$column;
+  	}
+
+    // The Query
+	$the_query = new WP_Query( array( 'post_type' => 'event') );
+	$html 	.='<div class="row grid '.$class.'">';
+		while ( $the_query->have_posts() ) : the_post();
+	    	$the_query->the_post();
+
+		    	$html 	.='<div class="item">';
+		    	$html 	.='<div style="background:#f5f5f5;box-shadow:0px 0px 5px #c6c6c6;border-radius:6px;">';
+				$html   .='<div class="grid-thumbnail"style="padding:5px;">'.get_the_post_thumbnail().'</div>';
+				$html 	.='<h6 style="color:#333; text-align:center; text-transform:capitalize;">
+        					<a href="'.get_permalink().'">'.get_the_title().'</a></h6>';
+				$html 	.='</div>';
+				$html 	.='</div>';
+
+		endwhile; 
+	$html 	.='</div>';
+	
+    return $html;
+}
+add_shortcode('event_grid', 'event_grid_shortcode');
+
+
+
+// EVENT GALLERY WIDGET
+// Register and load the widget
+function event_gallery_load_widget() {
+    register_widget( 'event_gallery_widget' );
+}
+add_action( 'widgets_init', 'event_gallery_load_widget' );
+ 
+// Creating the widget 
+class event_gallery_widget extends WP_Widget {
+ 
+	function __construct() {
+		
+		parent::__construct(
+		 
+			// Base ID of your widget
+			'event_gallery_widget', 
+			 
+			// Widget name will appear in UI
+			__('Event Gallery Widget', 'event_gallery_widget_domain'), 
+			 
+			// Widget description
+			array( 'description' => __( 'Event Gallery Widget For Display Events Images', 'event_gallery_widget_domain' ), ) 
+		);
+	}
+	 
+	// Creating widget front-end
+	public function widget( $args, $instance ) {
+		$title 				= apply_filters( 'widget_title', $instance['title'] );
+		$count 				= (! $instance['count'] ) ?   6    : $instance['count'];
+		$order				= (! $instance['order'] ) ? 'DESC' : $instance['order'];
+		$grid				= (! $instance['grid'] ) ?   3    : $instance['grid'];
+		$icon_gallery 		= $instance['icon_gallery'];
+
+		// before and after widget arguments are defined by themes
+		echo $args['before_widget'];
+		if ( ! empty( $title ) )
+			echo $args['before_title'] . $title . $args['after_title'];
+
+
+		// This is where you run the code and display the output
+			$the_query = new WP_Query( array( 
+								'post_type' 		=> 'event', 
+								'order' 			=> $order, 
+								'gird' 				=> $grid, 
+								'posts_per_page'	=> $count
+								) 
+							);
+			if($grid <= 6 && $grid >= 2){
+				$class = 'column-'.$grid;
+			}
+
+			echo '<div class="row gallery-grid '.$class.'" style="margin:0;">';
+			while ( $the_query->have_posts() ) : the_post();
+		    	$the_query->the_post();
+				echo '<div class="item">';
+		    	echo '<div class="bg '.$icon_gallery.'">';
+				echo '<div class="grid-thumbnail"style="padding:3px;">'.get_the_post_thumbnail().'</div>';
+				echo '</div>';
+				echo '</div>';
+			endwhile; 
+			echo '</div>';
+
+			// wp_reset_postdata();
+			echo $args['after_widget'];
+	}
+
+	
+	// Widget Backend 
+	public function form( $instance ) {
+		$title			= ( isset( $instance[ 'title' ] ) ) 	? $instance[ 'title' ] : '';
+		$count 			= ( isset( $instance[ 'count' ] ) ) 	? $instance[ 'count' ] : '';
+		$order			= ( isset( $instance[ 'order' ] ) ) 	? $instance[ 'order' ] : '';
+		$grid			= ( isset( $instance[ 'grid' ]  ) ) 	? $instance[ 'grid' ]  : '';
+		$icon_gallery 	= ( isset( $instance[ 'icon_gallery' ] ) && !empty($instance[ 'icon_gallery' ])) ? $instance[ 'icon_gallery' ] : 'rounded';
+
+
+		// Widget admin form
+		?>
+		<div>
+			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label> 
+			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+			<label for="<?php echo $this->get_field_id( 'count' ); ?>"><?php _e( 'Count:' ); ?></label> 
+			<select class="form-control" id="count" style="width: 100%;" name="<?php echo $this->get_field_name( 'count' ); ?>">
+				<option value="3"  <?php echo ($count == '3')  ? 'selected' : '';?> >3  </option>
+				<option value="6"  <?php echo ($count == '6')  ? 'selected' : '';?> >6  </option>
+				<option value="9"  <?php echo ($count == '9')  ? 'selected' : '';?> >9  </option>
+				<option value="12" <?php echo ($count == '12') ? 'selected' : '';?> >12 </option>
+				<option value="16" <?php echo ($count == '16') ? 'selected' : '';?> >16 </option>
+			</select>			
+	  		<label for="<?php echo $this->get_field_id( 'order' ); ?>"><?php _e( 'Order:' ); ?></label> 
+			<select class="form-control" id="order" style="width: 100%;" name="<?php echo $this->get_field_name( 'order' ); ?>">
+				<option value="ASC"  <?php echo ($order == 'ASC')  ? 'selected' : '';?> >ASC </option>
+				<option value="DESC" <?php echo ($order == 'DESC') ? 'selected' : '';?> >DESC</option>
+			</select>
+		  	<label for="<?php echo $this->get_field_id( 'grid' ); ?>"><?php _e( 'Grid:' ); ?></label> 
+			<select class="form-control" id="grid" style="width: 100%;" name="<?php echo $this->get_field_name( 'grid' ); ?>">
+				<option value="2" <?php echo ($grid == '2')  ? 'selected' : '';?> >2 </option>
+				<option value="3" <?php echo ($grid == '3')  ? 'selected' : '';?> >3 </option>
+				<option value="4" <?php echo ($grid == '4')  ? 'selected' : '';?> >4 </option>
+				<option value="5" <?php echo ($grid == '5')  ? 'selected' : '';?> >5 </option>
+				<option value="6" <?php echo ($grid == '6')  ? 'selected' : '';?> >6 </option>
+			</select>
+			<div style="padding: 10px;">
+		    	<input type="radio" name="<?php echo $this->get_field_name( 'icon_gallery' ); ?>" id="rounded" value="rounded" <?php echo ($icon_gallery == "rounded") ? 'checked': '';?>>Rounded
+				<input type="radio" name="<?php echo $this->get_field_name( 'icon_gallery' ); ?>" id="square" value="square" <?php echo ($icon_gallery == "square") ? 'checked': '';?>>Square
+			</div>
+		</div>
+		<?php 
+	}
+	     
+	
+	// Updating widget replacing old instances with new
+	public function update( $new_instance, $old_instance ) {
+		$instance 				 	= array();
+		$instance['title'] 			= ( ! empty( $new_instance['title'] ) ) 		? strip_tags( $new_instance['title'] ) : '';
+		$instance['count'] 		 	= ( ! empty( $new_instance['count'] ) ) 		? strip_tags( $new_instance['count'] ) : '';
+		$instance['order'] 		 	= ( ! empty( $new_instance['order'] ) ) 		? strip_tags( $new_instance['order'] ) : '';
+		$instance['grid'] 		 	= ( ! empty( $new_instance['grid'] ) ) 			? strip_tags( $new_instance['grid'] ) : '';
+		$instance['icon_gallery'] 	= ( ! empty( $new_instance['icon_gallery'] ) ) 	? $new_instance['icon_gallery'] : '';
+
+		return $instance;
+	}
+} // Class wpb_widget ends here
 
 require_once "custom-post-type-event.php";

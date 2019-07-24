@@ -344,3 +344,111 @@ body {
     text-decoration: none;
     color: #666;             
 }
+.grid-thumbnail img{
+    height: 100%;
+    width: 100%;
+}
+
+.grid > div{
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+} 
+@media (min-width: 768px){
+    .column-2 > div{
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 50%;
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+    .column-3 > div{
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 33.333333%;
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+    .column-4 > div{
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 25%;
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+    .column-5 > div{
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 20%;
+        flex: 0 0 20%;
+        max-width: 20%;
+    }
+    .column-6 > div{
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 16.66%;
+        flex: 0 0 16.66%;
+        max-width: 16.66%;
+    }
+}
+
+.gallery-thumbnail img{
+    height: 100%;
+    width: 100%;
+}
+
+.gallery-grid{
+    margin: 0;
+}
+.gallery-grid img{
+    height: 100px;
+    width: 100%;
+}
+.gallery-grid > div{
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+
+} 
+@media (min-width: 768px){
+    .column-2 > div{
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 50%;
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+    .column-3 > div{
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 33.333333%;
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+    .column-4 > div{
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 25%;
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+    .column-5 > div{
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 20%;
+        flex: 0 0 20%;
+        max-width: 20%;
+    }
+    .column-6 > div{
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 16.66%;
+        flex: 0 0 16.66%;
+        max-width: 16.66%;
+    }
+}
+
+.bg.square  img {
+    border-radius: 4px;
+    background: #f5f5f5;
+    padding: 3px;
+}
+
+
+.bg.rounded img{
+    border-radius: 50%;
+    background: #f5f5f5;
+    padding: 3px;
+}
