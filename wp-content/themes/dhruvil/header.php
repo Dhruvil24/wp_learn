@@ -31,11 +31,15 @@
 		<!-- OWL CAROUSEL -->
 	    <link rel="stylesheet" href="https://owlcarousel2.github.io/OwlCarousel2/assets/owlcarousel/assets/owl.carousel.min.css">
 	    <link rel="stylesheet" href="https://owlcarousel2.github.io/OwlCarousel2/assets/owlcarousel/assets/owl.theme.default.min.css">
-	    <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+	    
+	    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+		<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+		<script src="https://owlcarousel2.github.io/OwlCarousel2/assets/owlcarousel/owl.carousel.js"></script>
+	    
 	<?php wp_head();?>
 	</head>
 
-<body>
+<body style="font-family: sans-serif;">
 	<div class="blog-masthead sticky">
 	    <div class="logo col-md-3">
 	        <a href="http://localhost/dhruvil/wp/wp_learn/"><img src="http://localhost/dhruvil/wp/Learn_wordpress/wp-content/themes/dhruvil/logo.png" class="img-fluid" style="position: absolute; height: 65px;"></a>

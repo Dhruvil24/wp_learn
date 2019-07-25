@@ -10,7 +10,6 @@
 
 add_theme_support( 'post-thumbnails' );
 
-
 // ADD CSS AND SCRIPTS
 function theme_styles(){ 
 	wp_register_style( 'fontawesome', 'http:////maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' );
@@ -24,9 +23,7 @@ add_action('wp_enqueue_scripts', 'theme_styles');
 // END CSS AND SCRIPTS
 
 
-// HIDE ADMINBAR
 add_filter('show_admin_bar', '__return_false');
-// END
 
 
 // navBar
@@ -58,7 +55,6 @@ add_action( 'widgets_init', 'my_register_sidebar' );
 // end sideBar
 
 
-// FOOTER
 function my_register_footer() {
 	register_sidebar(
 		array(
@@ -95,7 +91,8 @@ function my_register_footer() {
 	);	
 }
 add_action( 'widgets_init', 'my_register_footer' );
-// END FOOTER
+
+
 
 
 // Register and load the widget
@@ -283,6 +280,8 @@ class social_widget extends WP_Widget {
 } // Class wpb_widget ends here
 
 
+
+
 // OPENING AND CLOSING HOURS
 // Register and load the widget
 function opening_hours_widget() {
@@ -383,6 +382,7 @@ class hours_widget extends WP_Widget {
 } // Class wpb_widget ends here
 
 
+
 // Function to add custom text to posts and pages
   function custom_shortcode() {
 	return '<div style="color:#999; font-weight:700; font-size:24px;">'.'Hello Dhruvil'.'</div>';
@@ -404,6 +404,7 @@ function number_shortcode( $atts, $content = null ) {
 	return $html;
 }
 add_shortcode('number_series', 'number_shortcode');
+
 
 
 // Function to add custom event to posts and pages
@@ -436,13 +437,14 @@ function event_shortcode( $atts, $content = null ) {
 		$html 	.='<h4 style="color:#333; margin-top:10px; text-align:center; text-transform:capitalize;"> <a href="'.get_permalink().'">'.get_the_title().'</a></h4>';
 		$html 	.='<h6 style="color:#111; text-align:center;">Location: '.get_post_meta( get_the_ID(), '_location' , true ).'</h6>';
 		$html 	.='<div style="display:flex;">';
-		$html 	.='<h6 class="col-md-8" style="color:#111; font-size:15px; text-align:left; padding:0;">Start_Date: '.get_post_meta( get_the_ID(), '_start_date' , true ).'</h6>';
+		$html 	.='<h6 class="col-md-8" style="color:#111; text-align:left; padding:0;">Start_Date: '.get_post_meta( get_the_ID(), '_start_date' , true ).'</h6>';
 				
 				if(get_post_meta( get_the_ID(), '_entry' , true ) == 'Royal'){
-					$html 	.='<h6 class="col-md-4"  style="font-size:15px; color:#111; text-align:left; padding:0;">Fees:Rs.'.get_post_meta( get_the_ID(), '_amount' , true ).'</h6>';
+					$html 	.='<h6 class="col-md-4" style="color:#111; text-align:left; padding:0;">Fees: Rs.' 
+				.get_post_meta( get_the_ID(), '_amount' , true ).'</h6>';
 				}
 				else{	
-					$html 	.='<h6 style="color:#111; font-size:15px; text-align:center;">Free Entry</h6>';
+					$html 	.='<h6 style="color:#111; text-align:center;">Free Entry</h6>';
 				}
 		$html 	.='</div>';
 		$html 	.='</div>';
@@ -453,26 +455,27 @@ function event_shortcode( $atts, $content = null ) {
 	$html 	.='</div>';
 
 	$html 	.='<script type="text/javascript">
-					$("#owl-carousel").owlCarousel({
-						loop:true,
-						margin:0,
-						responsiveClass:true,
-						responsive:{
-							0:{
-								items:1,
-								nav:true
-							},
-							600:{
-								items:2,
-								nav:false
-							},
-							1000:{
-								items:3,
-								nav:true,
-								loop:false
+					
+						$("#owl-carousel").owlCarousel({
+							loop:true,
+							margin:0,
+							responsiveClass:true,
+							responsive:{
+								0:{
+									items:1,
+									nav:true
+								},
+								600:{
+									items:2,
+									nav:false
+								},
+								1000:{
+									items:3,
+									nav:true,
+									loop:false
+								}
 							}
-						}
-					});
+						});
 				</script>';
 	return $html;
 }
@@ -740,6 +743,7 @@ function event_grid_shortcode( $atts, $content = null ) {
 	return $html;
 }
 add_shortcode('event_grid', 'event_grid_shortcode');
+
 
 
 // EVENT GALLERY WIDGET

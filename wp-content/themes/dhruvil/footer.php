@@ -25,8 +25,10 @@ wp_footer()?>
 		   		<?php dynamic_sidebar( 'footer3' ); ?>
 		   	</div>
 		</footer>
-
+		<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 		<script src="https://owlcarousel2.github.io/OwlCarousel2/assets/owlcarousel/owl.carousel.js"></script>
+
+		
 
 	</body>
 </html>
