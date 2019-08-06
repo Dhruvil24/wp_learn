@@ -728,7 +728,7 @@ function event_grid_shortcode( $atts, $content = null ) {
 		while ( $the_query->have_posts() ) : the_post();
 			$the_query->the_post();
 			$html 	.='<div class="item">';
-			$html 	.='<div style="background:#f5f5f5;box-shadow:0px 0px 5px #c6c6c6;border-radius:6px;">';
+			$html 	.='<div class="bg-grid" style="background:#f5f5f5;box-shadow:0px 0px 5px #c6c6c6;border-radius:6px;">';
 			$html   .='<div class="grid-thumbnail"style="padding:5px;">'.get_the_post_thumbnail().'</div>';
 			$html 	.='<h6 style="color:#333; text-align:center; text-transform:capitalize;">
 						<a href="'.get_permalink().'">'.get_the_title().'</a></h6>';
@@ -769,6 +769,7 @@ class event_gallery_widget extends WP_Widget {
 	 
 	// Creating widget front-end
 	public function widget( $args, $instance ) {
+
 		$title 			= apply_filters( 'widget_title', $instance['title'] );
 		$count 			= (! $instance['count'] ) ?   6    : $instance['count'];
 		$order			= (! $instance['order'] ) ? 'DESC' : $instance['order'];
@@ -782,45 +783,41 @@ class event_gallery_widget extends WP_Widget {
 
 
 		// This is where you run the code and display the output
-			$the_query = new WP_Query( array( 
-								'post_type' 	=> 'event', 
-								'order' 		=> $order, 
-								'gird' 			=> $grid, 
-								'posts_per_page'=> $count
-								) 
-							);
-			if($grid <= 6 && $grid >= 2){
-				$class = 'column-'.$grid;
-			}
+		$the_query = new WP_Query( array( 
+							'post_type' 	=> 'event', 
+							'order' 		=> $order, 
+							'gird' 			=> $grid, 
+							'posts_per_page'=> $count
+							) 
+						);
+		if($grid <= 6 && $grid >= 2){
+			$class = 'column-'.$grid;
+		}
 
-			echo '<div class="row gallery-grid '.$class.'" style="margin:0;">';
-			while ( $the_query->have_posts() ) : the_post();
-				$the_query->the_post();
-				echo '<div class="item">';
-				echo '<div class="bg '.$icon_gallery.'">';
-				echo '<div class="grid-thumbnail" style="padding:3px;"><a  data-fancybox="grid-thumbnail" rel="fancybox-button" data-width="750" data-height="500" href="'.get_the_post_thumbnail_url().'"><img src="'.get_the_post_thumbnail_url().'" /></a></div>';
-				echo '</div>';
-				echo '</div>';
-			endwhile;
+		echo '<div class="row gallery-grid '.$class.'" style="margin:0;">';
+		while ( $the_query->have_posts() ) : the_post();
+			$the_query->the_post();
+			echo '<div class="item">';
+			echo '<div class="bg '.$icon_gallery.'">';
+			echo '<div class="grid-thumbnail" style="padding:3px;"><a  data-fancybox="grid-thumbnail" rel="fancybox-button" data-width="750" data-height="500" href="'.get_the_post_thumbnail_url().'"><img src="'.get_the_post_thumbnail_url().'" /></a></div>';
 			echo '</div>';
+			echo '</div>';
+		endwhile;
 
-
-			
-			// wp_reset_postdata();
-			echo $args['after_widget'];
-
-			
+		echo '</div>';
+		// wp_reset_postdata();
+		echo $args['after_widget'];			
 	}
 
 	
 	// Widget Backend 
 	public function form( $instance ) {
+
 		$title			= ( isset( $instance[ 'title' ] ) ) 	? $instance[ 'title' ] : '';
 		$count 			= ( isset( $instance[ 'count' ] ) ) 	? $instance[ 'count' ] : '';
 		$order			= ( isset( $instance[ 'order' ] ) ) 	? $instance[ 'order' ] : '';
 		$grid			= ( isset( $instance[ 'grid' ]  ) ) 	? $instance[ 'grid' ]  : '';
 		$icon_gallery 	= ( isset( $instance[ 'icon_gallery' ] ) && !empty($instance[ 'icon_gallery' ])) ? $instance[ 'icon_gallery' ] : 'rounded';
-
 
 		// Widget admin form
 		?>
@@ -859,16 +856,22 @@ class event_gallery_widget extends WP_Widget {
 	
 	// Updating widget replacing old instances with new
 	public function update( $new_instance, $old_instance ) {
+
 		$instance 				 	= array();
 		$instance['title'] 			= ( ! empty( $new_instance['title'] ) ) 		? strip_tags( $new_instance['title'] ) : '';
 		$instance['count'] 		 	= ( ! empty( $new_instance['count'] ) ) 		? strip_tags( $new_instance['count'] ) : '';
 		$instance['order'] 		 	= ( ! empty( $new_instance['order'] ) ) 		? strip_tags( $new_instance['order'] ) : '';
 		$instance['grid'] 		 	= ( ! empty( $new_instance['grid'] ) ) 			? strip_tags( $new_instance['grid'] ) : '';
 		$instance['icon_gallery'] 	= ( ! empty( $new_instance['icon_gallery'] ) ) 	? $new_instance['icon_gallery'] : '';
-
 		return $instance;
 	}
 } // Class wpb_widget ends here
 
+
+
+function demo_hook() {
+	echo "Helloooooo";
+}
+add_action( 'pre_trackback_post', 'demo_hook' );
 
 require_once "custom-post-type-event.php";

@@ -44,14 +44,15 @@ body {
     padding: 8px 15px;
     display: block;
     text-decoration: none;
-    color: #000;
+    /*color: rgb(7, 117, 187);*/
+    color: #1b478f;
     font-size: 18px;
 }
 
 .menu .menu-item a:hover {
     color: #fff;
     border-radius: 5px 15px;
-    background: rgba(0, 0, 0, .8);
+    background: rgba(7, 117, 187, .8);
 }   
 
 .blog-nav .menu-item {
@@ -162,7 +163,7 @@ body {
 }
 
 .col-md-3 #d1 h3{
-    color: blue;
+    color: #1b478f;
 }
 
 #f1 .widget-title {
@@ -349,6 +350,7 @@ body {
 .grid-thumbnail img{
     height: 150px;
     width: 100%;
+
 }
 
 .grid > div{
@@ -458,12 +460,12 @@ body {
 }
 .bg.rounded img:hover,.bg.square img:hover{
     transition: .5s;
-    background: rgba(255, 82, 104,.8);
+    background: rgba(27, 117, 187,.8);
     filter: grayscale(0%);
 }
 
 .fancybox-button, .fancybox-button:link, .fancybox-button:visited {
-    color: red;
+    color: #1b75bb;
 }
 .fancybox-content .fancybox-image{
     border-radius: 4px;
@@ -471,4 +473,16 @@ body {
 }
 .fancybox-content .fancybox-image{
     padding: 5px;
+}
+.fancybox-progress{
+    background: rgb(255, 255, 255);
+}
+
+.grid .item h6 a{
+    color: #999;
+    font-weight: 550;
+}
+.grid .item h6 a:hover{
+    text-decoration: none;
+    color: #333;
 }
