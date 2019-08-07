@@ -56,23 +56,44 @@ function all_page_function(){
 
 // INCLUDE CSS AND SCRIPTS
 function first_demo_plugin_assets(){
-	// css and js files
-	wp_enqueue_style(
-		"style" , // unique name for css file
-		PLUGIN_URL."../First-Demo/assets/css/style.css" , // css file path 
-		'' , // dependency on other files
-		PLUGIN_VERSION // plugin version number
-	);
+	// // css and js files
+	// wp_enqueue_style(
+	// 	"style" , // unique name for css file
+	// 	PLUGIN_URL."../First-Demo/assets/css/style.css" , // css file path 
+	// 	'' , // dependency on other files
+	// 	PLUGIN_VERSION // plugin version number
+	// );
 
 	wp_enqueue_script(
-		"style" , // unique name for js file
+		"script" , // unique name for js file
 		PLUGIN_URL."../First-Demo/assets/js/script.js" , // js file path 
 		'' , // dependency on other files
 		PLUGIN_VERSION , // plugin version number
-		true
+		false
 	);
+
+	
+
+	wp_localize_script("script","ajaxurl",admin_url("admin-ajax.php"));
 }
 add_action( "init" , "first_demo_plugin_assets" );
+
+
+if( isset( $_REQUEST['action'] ) ){
+
+	switch ($_REQUEST['action']) {
+
+		case 'first_demo_plugin_library': 
+			add_action("admin_init","add_first_demo_plugin_library");
+	
+		function add_first_demo_plugin_library(){
+			global $wpdb;
+			include_once PLUGIN_DIR_PATH."/library/first-demo-plugin-lib.php";; 
+		} 
+		break;
+	}
+
+}
 
 
 // REGISTER PLUGIN
@@ -102,5 +123,27 @@ function deactivate_table(){
 	// uninstall muysql code
 	global $wpdb;
 	$wpdb->query('DROP TABLE if Exists first_demo_plugin');	
+
+
+	$the_post_id = get_option("first_demo_plugin_page_id");
+	if(!empty($the_post_id)){
+		wp_delete_post($the_post_id,true);
+	}
 }
 register_deactivation_hook(__FILE__,'deactivate_table');
+
+
+function create_page(){
+	// code for create page
+	$page 				  = array();
+	$page['post_title']   = "First Demo Plugin Online Web Tutor"; 
+	$page['post_content'] = "Learning Platform For Wordpress First Demo Plugin Online Web Tuitor"; 
+	$page['post_status']  = "publish";
+	$page['post_slug'] 	  = "first-demo-plugin-online";
+	$page['post_type']    = "page";
+
+	$post_id = wp_insert_post($page);
+
+	add_option("first_demo_plugin_page_id",$post_id);
+}
+register_activation_hook(__FILE__,'create_page');
