@@ -96,6 +96,20 @@ if( isset( $_REQUEST['action'] ) ){
 }
 
 
+// first demo ajax request from js file
+add_action( 'wp_ajax_first_demo_ajax_req', 'first_demo_ajax_req' );
+function first_demo_ajax_req(){
+	echo json_encode($_REQUEST);
+	wp_die();
+}
+
+
+add_action( 'wp_ajax_first_demo_plugin', 'my_ajax_foobar_handler' );
+function my_ajax_foobar_handler(){
+	print_r($_REQUEST);
+	wp_die();
+}
+
 // REGISTER PLUGIN
 function first_demo_plugin_tables(){
 	global $wpdb;
@@ -147,3 +161,45 @@ function create_page(){
 	add_option("first_demo_plugin_page_id",$post_id);
 }
 register_activation_hook(__FILE__,'create_page');
+
+
+// custom shortcode
+add_shortcode("first-demo-plugin","firstDemoPluginFunction");
+
+function firstDemoPluginFunction(){
+	// we have atteched php file
+	include_once PLUGIN_DIR_PATH .'/views/shortcode-template.php';
+}
+
+
+// custom shortcode with parameter
+add_shortcode("first-demo-plugin-parameter","firstDemoPluginParams");
+
+function firstDemoPluginParams($params){
+	$values = shortcode_atts(
+		array( // default value of params
+			"name" => "dhruvil",
+			"author" => "Dhruvil Chauhan"
+		),
+		$params, // dynamic params coming shortcode values
+		'first-demo-plugin-parameter' // optional parameter
+	);
+
+	echo " Name : " . $values['name'] . " and Author : " . $values['author']; 
+}
+
+
+// tag based
+add_shortcode("tag-based","fistDemoTagBased");
+
+function fistDemoTagBased($params,$content,$tag){
+	if($tag == "tag-based"){
+		echo "<h1>" . $content . "</h1>";
+	}
+
+	if($tag == "called_me_down"){
+		echo "advance format of wp shortcode";
+	}
+}
+// call me down
+add_shortcode("called_me_down","fistDemoTagBased");

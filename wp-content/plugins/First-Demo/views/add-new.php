@@ -17,16 +17,7 @@
   </style>
 </head>
 <body>
-<?php 
-	global $wpdb;
 
-	$db_results = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT * FROM wp_posts order by ID limit 5",''
-			)
-	);
-	
-?>
 <div class="container">
   <form action="#" id="frmPost">
     <div class="form-group">
