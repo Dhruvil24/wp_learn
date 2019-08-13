@@ -15,6 +15,8 @@
   		color:red;
   	}
   </style>
+
+<?php wp_enqueue_media(); ?>
 </head>
 <body>
 
@@ -27,6 +29,10 @@
     <div class="form-group">
       <label for="email">Email:</label>
       <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" required>
+    </div>
+     <div class="form-group">
+      <label for="desc">Add Description:</label>
+      <?php wp_editor( "" , "description_id" ); ?>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>

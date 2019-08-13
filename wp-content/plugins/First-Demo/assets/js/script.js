@@ -2,6 +2,28 @@
 
 jQuery(function() {
 
+	jQuery("#frmPost").validate({
+		submitHandler: function(){
+			var name = jQuery("#name").val();
+			var email = jQuery("#email").val();
+			var description = encodeURIComponent(tinyMCE.get("description_id").getContent());
+			var postdata = "action=first_demo_plugin_library&param=savedata&email="+email+"&name="+name+"&description="+description;
+			jQuery.post(ajaxurl,postdata,function(response){
+				console.log(response);
+			})
+		}
+	});
+
+	// jQuery("#btnImg").on("click",function(){
+	// 	var image = wp.media({
+	// 		title: "Upload Image",
+	// 		multiple: false
+	// 	}).open().on("select",function(e){
+	// 		var uploadedImage = image.state().get("selection"); 
+	// 		console.log(uploadedImage.toJSON());	
+	// 	});
+	// });
+
 	//otehr ajax request
 	jQuery("#frmPostOtherPage").validate({
 		submitHandler:function(){

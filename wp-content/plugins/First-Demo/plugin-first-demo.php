@@ -24,7 +24,7 @@ function addMenu(){
 		"example-options" , //menu_slug
 		"add_new_function" , //function
 		"dashicons-tickets" , //icon_url
-		6 //position 
+		10 //position 
 	);
 	add_submenu_page( 
 		"example-options" , //parent_slug
@@ -71,13 +71,10 @@ function first_demo_plugin_assets(){
 		PLUGIN_VERSION , // plugin version number
 		false
 	);
-
-	
-
 	wp_localize_script("script","ajaxurl",admin_url("admin-ajax.php"));
 }
 add_action( "init" , "first_demo_plugin_assets" );
-
+	
 
 if( isset( $_REQUEST['action'] ) ){
 
