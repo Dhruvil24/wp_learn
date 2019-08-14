@@ -423,7 +423,7 @@ function event_shortcode( $atts, $content = null ) {
 				 		'posts_per_page' => $limit 
 				 	) );
 
-
+    $html   .='';
 	$html 	.='<div class="row">';
 	$html 	.='<div id="owl-carousel" class="owl-carousel owl-theme">';
 	while ( $the_query->have_posts() ) : the_post();
