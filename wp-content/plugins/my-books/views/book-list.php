@@ -7,7 +7,7 @@
     );
 //print_r($all_books);
 ?>
-<div class="container">
+<div class="container-fluid">
     <div class="row" style="display: unset">
         <div class="alert alert-info">
             <h5>My Book List</h5>
@@ -41,8 +41,8 @@
                                         <td><img src="<?php echo $value['book_image']; ?>" style="height: 50px;width: 50px;"></td>
                                         <td><?php echo $value['created_at']; ?></td>
                                         <td>
-                                            <a href="admin.php?page=book-edit&edit<?php echo $value['id'];?>" class="btn btn-info">Edit</a>
-                                            <a href="javascript:void(0)" class="btn btn-danger">Delete</a>
+                                            <a href="admin.php?page=book-edit&edit=<?php echo $value['id'];?>" class="btn btn-info">Edit</a>
+                                            <a href="javascript:void(0)" data-id="<?php echo $value['id'];?>" class="btn btn-danger btnbookdelete">Delete</a>
                                         </td>
                                     </tr>
                                 <?php

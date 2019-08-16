@@ -1,5 +1,5 @@
 <?php wp_enqueue_media(); ?>
-<div class="container">
+<div class="container-fluid">
     <div class="alert alert-info">
         <h5>Add Book Page</h5>
     </div>
@@ -21,7 +21,23 @@
                             <label for="author">Author:</label>
                         </div>
                         <div class="col-md-10">
-                            <input type="text" id="author" class="form-control" name="author" placeholder="Your author name.." required>
+                            <select>
+                                <option value="-1">-- Choose Author --</option>
+                                <?php
+                                global $wpdb;
+                                $getAllAuthors = $wpdb->get_results(
+                                    $wpdb->prepare(
+                                        "SELECT * FROM ".my_authors_table()." ORDER by id DESC ", ""
+                                    )
+                                );
+                                foreach($getAllAuthors as $index=>$author){
+                                    ?>
+                                        <option value="<?php echo $author->id; ?>"><?php echo $author->name; ?></option>
+                                    <?php
+                                }
+                                ?>
+
+                            </select>
                         </div>
                     </div>
                     <div class="row">

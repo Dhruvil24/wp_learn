@@ -22,19 +22,31 @@
 //    die;
 
     function my_book_include_assets(){
-        //styles
-        wp_enqueue_style( "bootstrap", MY_BOOK_PLUGIN_URL."/assets/css/bootstrap.min.css", "" );
-        wp_enqueue_style( "datatable", MY_BOOK_PLUGIN_URL."/assets/css/jquery.dataTables.min.css", "" );
-        wp_enqueue_style( "notifybar", MY_BOOK_PLUGIN_URL."/assets/css/jquery.notifyBar.css", "" );
-        wp_enqueue_style( "style", MY_BOOK_PLUGIN_URL."/assets/css/style.css", "" );
-        //scripts
-        wp_enqueue_script( "jquery" );
-        wp_enqueue_script( "bootstrap.min.js", MY_BOOK_PLUGIN_URL."/assets/js/bootstrap.min.js", "", true );
-        wp_enqueue_script( "jquery.validate.min.js", MY_BOOK_PLUGIN_URL."/assets/js/jquery.validate.min.js", "", true );
-        wp_enqueue_script( "jquery.dataTables.min.js", MY_BOOK_PLUGIN_URL."/assets/js/jquery.dataTables.min.js", "", true );
-        wp_enqueue_script( "jquery.notifyBar.js", MY_BOOK_PLUGIN_URL."/assets/js/jquery.notifyBar.js", "", true );
-        wp_enqueue_script( "script.js", MY_BOOK_PLUGIN_URL."/assets/js/script.js", "", true );
-        wp_localize_script( "script.js", "mybookajaxurl", admin_url("admin-ajax.php") );
+
+        $slug = '';
+        $pages_includes = array("book-list","add-new","book-edit","add-author","remove-author","add-student","remove-student","course-tracker");
+
+        $currentPage = $_GET['page'];
+
+        if(in_array($currentPage,$pages_includes)){
+
+            //styles
+            wp_enqueue_style( "bootstrap", MY_BOOK_PLUGIN_URL."/assets/css/bootstrap.min.css", "" );
+            wp_enqueue_style( "datatable", MY_BOOK_PLUGIN_URL."/assets/css/jquery.dataTables.min.css", "" );
+            wp_enqueue_style( "notifybar", MY_BOOK_PLUGIN_URL."/assets/css/jquery.notifyBar.css", "" );
+            wp_enqueue_style( "style", MY_BOOK_PLUGIN_URL."/assets/css/style.css", "" );
+            //scripts
+            wp_enqueue_script( "jquery" );
+            wp_enqueue_script( "bootstrap.min.js", MY_BOOK_PLUGIN_URL."/assets/js/bootstrap.min.js", "", true );
+            wp_enqueue_script( "jquery.validate.min.js", MY_BOOK_PLUGIN_URL."/assets/js/jquery.validate.min.js", "", true );
+            wp_enqueue_script( "jquery.dataTables.min.js", MY_BOOK_PLUGIN_URL."/assets/js/jquery.dataTables.min.js", "", true );
+            wp_enqueue_script( "jquery.notifyBar.js", MY_BOOK_PLUGIN_URL."/assets/js/jquery.notifyBar.js", "", true );
+            wp_enqueue_script( "script.js", MY_BOOK_PLUGIN_URL."/assets/js/script.js", "", true );
+            wp_localize_script( "script.js", "mybookajaxurl", admin_url("admin-ajax.php") );
+
+        }
+
+
     }
     add_action( "init", "my_book_include_assets" );
 
@@ -44,6 +56,14 @@
         add_submenu_page( "book-list", "Book List", "Book List", "manage_options", "book-list", "my_book_list" );
         add_submenu_page( "book-list", "Add New", "Add New", "manage_options", "add-new", "my_book_add" );
         add_submenu_page( "book-list", "", "", "manage_options", "book-edit", "my_book_edit" );
+
+        // my_extended sub menus
+        add_submenu_page( "book-list", "Add New Author", "Add New Author", "manage_options", "add-author", "my_author_add" );
+        add_submenu_page( "book-list", "Menage Author", "Menage Author", "manage_options", "remove-author", "my_author_remove" );
+        add_submenu_page( "book-list", "Add New Student", "Add New Student", "manage_options", "add-student", "my_student_add" );
+        add_submenu_page( "book-list", "Menage Student", "Menage Student", "manage_options", "remove-student", "my_student_remove" );
+        add_submenu_page( "book-list", "Course Tracker", "Course Tracker", "manage_options", "course-tracker", "course_tracker" );
+        // end section my_extended sub menus
     }
     add_action("admin_menu", "my_book_plugin_menus");
 
@@ -59,10 +79,46 @@
         include_once MY_BOOK_PLUGIN_DIR_PATH ."/views/book-edit.php";
     }
 
+    function my_author_add(){
+        include_once MY_BOOK_PLUGIN_DIR_PATH ."/views/author-add.php";
+    }
+
+    function my_author_remove(){
+        include_once MY_BOOK_PLUGIN_DIR_PATH ."/views/manage-author.php";
+    }
+
+    function my_student_add(){
+        include_once MY_BOOK_PLUGIN_DIR_PATH ."/views/student-add.php";
+    }
+
+    function my_student_remove(){
+        include_once MY_BOOK_PLUGIN_DIR_PATH ."/views/manage-student.php";
+    }
+
+    function course_tracker(){
+        include_once MY_BOOK_PLUGIN_DIR_PATH ."/views/course-tracker.php";
+    }
+
+
     // REGISTER PLUGIN
     function my_book_table(){
         global $wpdb;
         return $wpdb->prefix."my_books"; // wp_my_books
+    }
+
+    function my_authors_table(){
+        global $wpdb;
+        return $wpdb->prefix."my_authors"; // wp_my_authors
+    }
+
+    function my_students_table(){
+        global $wpdb;
+        return $wpdb->prefix."my_students"; // wp_my_student
+    }
+
+    function my_enrol_table(){
+        global $wpdb;
+        return $wpdb->prefix."my_enrol"; // wp_my_enrol
     }
 
     function my_book_generates_table_script(){
@@ -80,12 +136,58 @@
                     ) ENGINE=InnoDB DEFAULT CHARSET=latin1";
 
             dbDelta($sql);
+
+            $sql2 = "CREATE TABLE `".my_authors_table()."` (
+                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                    `name` varchar(255) DEFAULT NULL,
+                    `fb_link` text,
+                    `about` text,
+                    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (`id`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            dbDelta($sql2);
+
+            $sql3 = "CREATE TABLE `".my_students_table()."` (
+                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                    `name` varchar(255) DEFAULT NULL,
+                    `email` varchar(255) DEFAULT NULL,
+                    `user_login_id` int(11) DEFAULT NULL,
+                    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (`id`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            dbDelta($sql3);
+
+            $sql4 = "CREATE TABLE `".my_enrol_table()."` (
+                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                    `student_id` int(11) NOT NULL,
+                    `book_id` int(11) NOT NULL,
+                    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (`id`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            dbDelta($sql4);
+
+        // user role registration
+        add_role("wp_book_user_key","My Book User",array(
+            "read"=> true
+        ));
     }
     register_activation_hook(__FILE__,'my_book_generates_table_script');
 
     function drop_table_plugin_books(){
         global $wpdb;
         $wpdb->query("DROP TABLE IF EXISTS ".$wpdb->prefix."my_books");
+        $wpdb->query("DROP TABLE IF EXISTS ".$wpdb->prefix."my_authors");
+        $wpdb->query("DROP TABLE IF EXISTS ".$wpdb->prefix."my_students");
+        $wpdb->query("DROP TABLE IF EXISTS ".$wpdb->prefix."my_enrol");
+
+        // removing user role
+        if(get_role("wp_book_user_key")){
+            remove_role("wp_book_user_key");
+        }
+
     }
     register_deactivation_hook(__FILE__,'drop_table_plugin_books');
 //    register_uninstall_hook(__FILE__,'drop_table_plugin_books');
@@ -94,20 +196,7 @@
     add_action("wp_ajax_mybookajaxurl","my_book_ajax_handler");
     function my_book_ajax_handler(){
         global $wpdb;
-        if($_REQUEST['param'] == "save_book"){
-            // save data to db table
-            $wpdb->insert(my_book_table(),array(
-                "name"=>$_REQUEST['name'],
-                "author"=>$_REQUEST['author'],
-                "about"=>$_REQUEST['about'],
-                "book_image"=>$_REQUEST['image_name']
-            ));
-            echo json_encode(array("status"=>1,"message"=>"Book Created Successfully"));
-        }
-        elseif($_REQUEST['param'] == "edit_book"){
-            // update data to db table
-
-        }
+        include_once MY_BOOK_PLUGIN_DIR_PATH ."/library/my_booklibrary.php";
         wp_die();
     }
 
