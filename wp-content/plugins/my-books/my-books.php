@@ -24,9 +24,16 @@
     function my_book_include_assets(){
 
         $slug = '';
-        $pages_includes = array("book-list","add-new","book-edit","add-author","remove-author","add-student","remove-student","course-tracker");
+        $pages_includes = array("frontendpage","book-list","add-new","book-edit","add-author","remove-author","add-student","remove-student","course-tracker");
 
         $currentPage = $_GET['page'];
+
+        if(empty($currentPage)){
+            $actual_link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URL]";
+            if(preg_match("/my-book/",$actual_link)){
+                $slug = "frontend_scripts";
+            }
+        }
 
         if(in_array($currentPage,$pages_includes)){
 
@@ -173,8 +180,28 @@
         add_role("wp_book_user_key","My Book User",array(
             "read"=> true
         ));
+
+        /* dynamic page creation code- listing of created books*/
+        // Create post object
+        $my_post = array(
+            'post_title'    => 'Book Page',
+            'post_content'  => '[book_page]',
+            'post_status'   => 'publish',
+            'post_type'     => 'page',
+            'post_name'     => 'my_book'
+        );
+
+        // Insert the post into the database
+        $book_id = wp_insert_post( $my_post );
+        add_option("my_book_page_id",$book_id);
     }
     register_activation_hook(__FILE__,'my_book_generates_table_script');
+
+    function my_book_page_functions(){
+        MY_BOOK_PLUGIN_DIR_PATH .'/views/my_books_frontend_lists.php';
+        echo "asffsdf";
+    }
+    add_shortcode("book_page","my_book_page_functions");
 
     function drop_table_plugin_books(){
         global $wpdb;
@@ -188,6 +215,13 @@
             remove_role("wp_book_user_key");
         }
 
+        //delete password
+        if(!empty(get_option("my_book_page_id"))){
+            $page_id = get_option("my_book_page_id");
+            wp_delete_post($page_id, true);
+            delete_option("my_book_page_id");
+        }
+
     }
     register_deactivation_hook(__FILE__,'drop_table_plugin_books');
 //    register_uninstall_hook(__FILE__,'drop_table_plugin_books');
@@ -198,6 +232,16 @@
         global $wpdb;
         include_once MY_BOOK_PLUGIN_DIR_PATH ."/library/my_booklibrary.php";
         wp_die();
+    }
+
+    add_filter("page_template","owt_custom_page_layout");
+    function owt_custom_page_layout($page_template){
+        global $post;
+        $page_slug = $post->$post_name;
+        if($page_slug == "my_book"){
+            $page_template =  MY_BOOK_PLUGIN_DIR_PATH .'/views/frontend-books-template.php';
+        }
+        return $page_template;
     }
 
 ?>
