@@ -30,8 +30,8 @@
 
         if(empty($currentPage)){
             $actual_link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URL]";
-            if(preg_match("/my-book/",$actual_link)){
-                $slug = "frontend_scripts";
+            if(preg_match("/my_book/",$actual_link)){
+                $currentPage = "frontendpage";
             }
         }
 
@@ -198,8 +198,7 @@
     register_activation_hook(__FILE__,'my_book_generates_table_script');
 
     function my_book_page_functions(){
-        MY_BOOK_PLUGIN_DIR_PATH .'/views/my_books_frontend_lists.php';
-        echo "asffsdf";
+       include_once MY_BOOK_PLUGIN_DIR_PATH .'/views/my_books_frontend_lists.php';
     }
     add_shortcode("book_page","my_book_page_functions");
 
@@ -238,10 +237,39 @@
     function owt_custom_page_layout($page_template){
         global $post;
         $page_slug = $post->$post_name;
-        if($page_slug == "my_book"){
-            $page_template =  MY_BOOK_PLUGIN_DIR_PATH .'/views/frontend-books-template.php';
+        if($page_slug==$post_name){
+            $page_template = MY_BOOK_PLUGIN_DIR_PATH ."/views/frontend-books-template.php";
         }
         return $page_template;
     }
 
+    function get_author_details($author_id){
+        global $wpdb;
+        $author_details = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM ".my_authors_table()."WHERE id = %d", $author_id
+            ),ARRAY_A
+        );
+        return $author_details;
+    }
+
+    function owt_login_user_role_filter($redirect_to,$request,$user){
+        // custom user role
+        global $user;
+        if(isset($user->roles) && is_array($user->roles)){
+            if(in_array("wp_book_user_key",$user->roles)){
+                $redirect_to = site_url()."/my_book";
+            }else{
+                return $redirect_to;
+            }
+        }
+    }
+    add_filter("login_redirect","owt_login_user_role_filter",10,3);
+
+    function owt_logout_user_role_filter(){
+        // custom user role
+        wp_redirect(site_url()."/my_book");
+        exit;
+    }
+    add_filter("wp_logout","owt_logout_user_role_filter");
 ?>

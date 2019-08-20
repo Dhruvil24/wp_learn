@@ -1,6 +1,11 @@
 jQuery(document).ready(function() {
     jQuery('#my-book').DataTable();
 
+    //enrol code
+    jQuery(document).on("click",".owt-enrol-btn",function(){
+        console.log("Enroll Successful");
+    });
+
     jQuery("#frmAddStudent").validate({
         submitHandler:function(){
             var postdata = "action=mybookajaxurl&param=save_student&"+jQuery("#frmAddStudent").serialize();

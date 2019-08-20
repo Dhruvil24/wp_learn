@@ -2,11 +2,9 @@
 /*
  Template Name: Front end book page layout
  */
-
- get_header();
-echo "11111";
+get_header();
 ?>
-<h1>gddfg</h1>
+<section class="pt-5 pb-5" style="height: 100px;"></section>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -17,5 +15,6 @@ echo "11111";
         </div>
     </div>
 </div>
-
+<section class="pt-5 pb-5" style="height: 300px;"></section>
+<section class="pt-5 pb-5" style="height: 300px;"></section>
 <?php get_footer();?>
